@@ -1,0 +1,43 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/home/index",
+			"style": {
+				"navigationBarTitleText": "百宝盒"
+			}
+		},
+		{
+			"path": "pages/methods/index"
+		},
+		{
+			"path": "pages/sizeList/index"
+		},
+		{
+			"path": "pages/searchs/index"
+		},
+		{
+			"path": "pages/login/index"
+		},
+		{
+			"path": "pages/preEdit/index"
+		},
+		{
+			"path": "pages/camera/index"
+		},
+		{
+			"path": "pages/edit/index"
+		},
+		{
+			"path": "pages/edit/complete/index"
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "百宝盒",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {
+		
+	}
+}
