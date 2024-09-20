@@ -149,17 +149,14 @@ export default {
         },
 
         getWeb() {
-            uni.request({
-                url: app.globalData.url + 'api/getWeb',
-                header: {
-                    token: app.globalData.token
-                },
+			let that = this
+            this.$http.request({
+                url: 'api/getWeb',
                 method: 'POST',
-                success: (res) => {
-                    this.downloadOne = res.data.downloadOne
-                    this.downloadTwo = res.data.downloadTwo
-                }
-            });
+            }).then(res => {
+				that.downloadOne = res.data.downloadOne
+				that.downloadTwo = res.data.downloadTwo
+			});
         },
 
         // 点击换背景
@@ -188,29 +185,26 @@ export default {
 
         //调用换背景
         updateColor(color, tu) {
-            uni.request({
-                url: app.globalData.url + 'api/updateIdPhoto',
+			let that = this
+            this.$http.request({
+                url: 'api/updateIdPhoto',
                 data: {
                     image: tu,
                     colors: color
                 },
-                header: {
-                    token: app.globalData.token
-                },
                 method: 'POST',
-                success: (res) => {
-                    if (res.data.code == 200) {
-                        this.imageData.cimg = res.data.data.cimg
-                        uni.hideLoading();
-                    } else if (res.data.code == 404) {
-                        uni.hideLoading();
-                        uni.showToast({
-                            title: res.data.data,
-                            icon: 'error'
-                        });
-                    }
-                }
-            });
+            }).then(res => {
+				if (res.data.code == 200) {
+				    that.imageData.cimg = res.data.data.cimg
+				    uni.hideLoading();
+				} else if (res.data.code == -1) {
+				    uni.hideLoading();
+				    uni.showToast({
+				        title: res.data.data,
+				        icon: 'error'
+				    });
+				}
+			});
         },
 
         //保存证件照
@@ -218,29 +212,26 @@ export default {
             uni.showLoading({
                 title: '下载中...'
             });
-            uni.request({
-                url: app.globalData.url + 'api/updateUserPhonto',
+			let that = this
+            this.$http.request({
+                url: 'api/updateUserPhonto',
                 data: {
                     image: this.imageData.cimg,
                     photoId: this.imageData.id2
                 },
-                header: {
-                    token: app.globalData.token
-                },
                 method: 'POST',
-                success: (res) => {
-                    if (res.data.code == 200) {
-                        this.picUrl = res.data.data.picUrl
-                        this.picId = res.data.data.picId
-                        this.savePicAndImg();
-                    } else if (res.data.code == 404) {
-                        uni.showToast({
-                            title: res.data.data,
-                            icon: 'none'
-                        });
-                    }
-                }
-            });
+            }).then(res => {
+				if (res.data.code == 200) {
+				    that.picUrl = res.data.data.picUrl
+				    that.picId = res.data.data.picId
+				    that.savePicAndImg();
+				} else if (res.data.code == -1) {
+				    uni.showToast({
+				        title: res.data.data,
+				        icon: 'none'
+				    });
+				}
+			});
         },
 
         //保存高清照
@@ -298,35 +289,31 @@ export default {
         // 根据图片id下载保存
         savePicIdAndImg() {
             const that = this;
-            uni.downloadFile({
-                url: app.globalData.url + 'file/download?id=' + this.picId,
-                success: function (res) {
-                    uni.hideLoading();
-                    // 下载成功后将图片保存到本地
-                    uni.saveImageToPhotosAlbum({
-                        filePath: res.tempFilePath,
-                        success: function () {
-                            uni.showToast({
-                                title: '保存成功',
-                                icon: 'success',
-                                duration: 2000
-                            });
-                        },
-                        fail: function () {
-                            that.checkq(); //解决用户拒绝相册
-                        }
-                    });
-                },
-
-                fail: function (res) {
-                    console.log(res);
-                    uni.showToast({
-                        title: '下载图片失败，请重试',
-                        icon: 'none',
-                        duration: 2000
-                    });
-                }
-            });
+            this.$http.download('file/download?id=' + this.picId)
+			.then(res => {
+				uni.hideLoading();
+				// 下载成功后将图片保存到本地
+				uni.saveImageToPhotosAlbum({
+				    filePath: res.tempFilePath,
+				    success: function () {
+				        uni.showToast({
+				            title: '保存成功',
+				            icon: 'success',
+				            duration: 2000
+				        });
+				    },
+				    fail: function () {
+				        that.checkq(); //解决用户拒绝相册
+				    }
+				});
+			}).catch(err => {
+				console.log(err);
+				uni.showToast({
+				    title: '下载图片失败，请重试',
+				    icon: 'none',
+				    duration: 2000
+				});
+			});
         },
 
         // 解决用户拒绝相册问题

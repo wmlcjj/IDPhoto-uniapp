@@ -141,69 +141,64 @@ export default {
 
         // 上传原图
         imgUpload(filePath) {
+			let that = this
             uni.showLoading({
                 title: '图片检测中'
             });
-            uni.uploadFile({
-                url: app.globalData.url + 'upload',
+            this.$http.upload('upload',{
                 filePath: filePath,
                 name: 'file',
                 header: {
                     'content-type': 'multipart/form-data',
-                    token: app.globalData.token
                 },
-                success: (res) => {
-                    uni.hideLoading();
-                    let data = JSON.parse(res.data);
-                    if (data.code == 200) {
-                        this.imageDivision(data.data);
-                    } else if (data.code == 404) {
-                        uni.showToast({
-                            title: data.data,
-                            icon: 'none'
-                        });
-                    } else {
-                        uni.navigateTo({
-                            url: '/pages/login/index'
-                        });
-                    }
-                }
-            });
+            }).then(res => {
+				uni.hideLoading();
+				let data = res.data;
+				if (data.code == 200) {
+				    that.imageDivision(data.data);
+				} else if (data.code == -1) {
+				    uni.showToast({
+				        title: data.data,
+				        icon: 'none'
+				    });
+				} else {
+				    uni.navigateTo({
+				        url: '/pages/login/index'
+				    });
+				}
+			});
         },
 
         imageDivision(tu) {
             uni.showLoading({
                 title: '制作中...'
             });
+			let that = this
             let type = this.detail.category == 4 ? 0 : 1;
-            uni.request({
-                url: app.globalData.url + 'api/createIdPhoto',
+            this.$http.request({
+                url: 'api/createIdPhoto',
                 data: {
                     image: tu,
                     type: type,
                     itemId: this.detail.id
                 },
-                header: {
-                    token: app.globalData.token
-                },
                 method: 'POST',
-                success: (res) => {
-                    uni.hideLoading();
-                    if (res.data.code == 200) {
-                        this.goEditPage(res.data.data);
-                    } else if (res.data.code == 404) {
-                        console.log(res.data);
-                        uni.showToast({
-                            title: res.data.data,
-                            icon: 'error'
-                        });
-                    } else {
-                        uni.navigateTo({
-                            url: '/pages/login/index'
-                        });
-                    }
-                }
-            });
+            }).then(res => {
+				uni.hideLoading();
+				if (res.data.code == 200) {
+				    that.goEditPage(res.data.data);
+				} else if (res.data.code == -1) {
+				    console.log(res.data);
+				    uni.showToast({
+				        title: res.data.data,
+				        icon: 'error'
+				    });
+				} else {
+				    uni.navigateTo({
+				        url: '/pages/login/index'
+				    });
+				}
+			});
         },
 
         /**

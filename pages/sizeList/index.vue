@@ -60,10 +60,6 @@ export default {
                 uni.navigateTo({
                     url: '/pages/searchs/index'
                 });
-            } else if (this.category == 4 && app.globalData.token == '') {
-                uni.navigateTo({
-                    url: '/pages/login/index'
-                });
             } else {
                 this.getSizeList();
             }
@@ -77,32 +73,28 @@ export default {
                 title: '加载中...'
             });
             const that = this;
-            uni.request({
-                url: app.globalData.url + 'item/itemList',
+            this.$http.request({
+                url: 'item/itemList',
                 data: {
                     pageNum: this.pageNum,
                     pageSize: this.pageSize,
                     type: this.category
                 },
-                header: {
-                    token: app.globalData.token
-                },
                 method: 'GET',
-                success(res) {
-                    uni.hideLoading();
-                    if (res.data.code == 200) {
-                        let newData = res.data.data || [];
-                        that.photoSizeList=that.photoSizeList.concat(newData)
-                        that.pageNum=that.pageNum + 1
-                        that.hasMoreData=newData.length >= that.pageSize
-                    } else if (res.data.code == 500) {
-                        uni.showToast({
-                            title: '暂无数据',
-                            icon: 'none'
-                        });
-                    }
-                }
-            });
+            }).then(res => {
+				uni.hideLoading();
+				if (res.data.code == 200) {
+				    let newData = res.data.data || [];
+				    that.photoSizeList=that.photoSizeList.concat(newData)
+				    that.pageNum=that.pageNum + 1
+				    that.hasMoreData=newData.length >= that.pageSize
+				} else if (res.data.code == 500) {
+				    uni.showToast({
+				        title: '暂无数据',
+				        icon: 'none'
+				    });
+				}
+			});
         },
 
         moredata: function () {

@@ -75,8 +75,8 @@ export default {
                 title: '搜索中...'
             });
             const that = this;
-            uni.request({
-                url: app.globalData.url + 'item/itemList',
+            this.$http.request({
+                url: 'item/itemList',
                 data: {
                     pageNum: this.pageNum,
                     pageSize: this.pageSize,
@@ -84,21 +84,20 @@ export default {
                     name: this.value
                 },
                 method: 'GET',
-                success(res) {
-                    uni.hideLoading();
-                    if (res.data.code == 200) {
-                        let newData = res.data.data || [];
-                        that.photoSizeList=that.photoSizeList.concat(newData)
-                        that.pageNum = that.pageNum + 1
-                        that.hasMoreData=newData.length >= that.pageSize
-                    } else {
-                        uni.showToast({
-                            title: '没有更多尺寸啦~',
-                            icon: 'none'
-                        });
-                    }
-                }
-            });
+            }).then(res => {
+				uni.hideLoading();
+				if (res.data.code == 200) {
+				    let newData = res.data.data || [];
+				    that.photoSizeList=that.photoSizeList.concat(newData)
+				    that.pageNum = that.pageNum + 1
+				    that.hasMoreData=newData.length >= that.pageSize
+				} else {
+				    uni.showToast({
+				        title: '没有更多尺寸啦~',
+				        icon: 'none'
+				    });
+				}
+			});
         },
 
         moredata: function () {

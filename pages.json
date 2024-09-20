@@ -29,6 +29,9 @@
 		},
 		{
 			"path": "pages/edit/complete/index"
+		},
+		{
+			"path": "pages/works/index"
 		}
 	],
 	"globalStyle": {

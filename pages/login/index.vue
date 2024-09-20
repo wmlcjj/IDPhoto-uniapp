@@ -27,36 +27,33 @@ export default {
     onLoad() {},
     methods: {
         noempower() {
+			let that = this
             uni.showLoading({
                 title: '登录中...'
             });
             uni.login({
                 success(res) {
-                    uni.request({
-                        url: app.globalData.url + 'user/login',
+                    that.$http.request({
+                        url: 'user/login',
                         data: {
                             code: res.code
                         },
                         method: 'GET',
-                        success(res) {
-                            uni.hideLoading();
-                            if (res.data.code == 200) {
-                                app.globalData.token = res.data.data.token;
-                                uni.navigateBack({
-                                    delta: 1
-                                });
-                            } else {
-                                uni.showToast({
-                                    title: '登录失败,当前系统维护中...',
-                                    icon: 'none'
-                                });
-                            }
-
-                            //   wx.navigateTo({
-                            //     url: "pages/home/index",
-                            // })
-                        }
-                    });
+                    }).then(res => {
+						uni.hideLoading();
+						if (res.data.code == 200) {
+						    uni.setStorageSync('token', res.data.data.token) ;
+						    uni.navigateBack({
+						        delta: 1
+						    });
+						} else {
+						    uni.showToast({
+						        title: '登录失败,当前系统维护中...',
+						        icon: 'none'
+						    });
+						}
+						
+					});
                 }
             });
         }

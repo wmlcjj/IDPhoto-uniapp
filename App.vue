@@ -3,11 +3,6 @@
 		data() {
 		    return {};
 		},
-		globalData: {
-		    url: 'http://127.0.0.1:8010/',
-		    //url:"https://h5.junjia-teach.com/idPhoto-server/",
-		    token: ''
-		},
 		onLaunch: function() {
 			console.log('App Launch')
 		},
