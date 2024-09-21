@@ -32,6 +32,9 @@
 		},
 		{
 			"path": "pages/works/index"
+		},
+		{
+			"path": "pages/custom/index"
 		}
 	],
 	"globalStyle": {

@@ -12,7 +12,7 @@
 					</view>
 				</view>
 				<view class="but-wh">
-					<button @tap="tapGetUserProfile" class="button">快捷登录</button>
+					<button @tap="tryLogin" class="button">快捷登录</button>
 				</view>
 			</view>
 			<cui-userprofiledialog ref="userProfileDialog" paddingBottom="92rpx"></cui-userprofiledialog>
@@ -35,6 +35,18 @@ export default {
     },
     onLoad() {},
     methods: {
+		tryLogin(){
+			let that = this
+			uni.showLoading({
+			    title: '登录中...'
+			});
+			uni.login({
+				provider: 'weixin',
+				success: loginRes => {
+					that.xcxLogin(loginRes.code)
+				}
+			});
+		},
 		tapGetUserProfile() {
 			let that = this
 			this.$refs["userProfileDialog"].show({
@@ -58,7 +70,7 @@ export default {
             });
 			uni.getUserProfile({
 				lang: 'zh_CN',
-				desc: "用户注册",
+				desc: "用户登陆",
 				success: (res) => {
 					uni.login({
 						provider: 'weixin',
@@ -92,7 +104,8 @@ export default {
 			})
         },
 		xcxLogin(code){
-			var appId = uni.getAccountInfoSync().miniProgram.appId;
+			let that = this
+			var appId = uni.getAccountInfoSync().miniProgram.appId
 			this.userInfo.appId = appId
 			this.userInfo.code = code
 			this.$http.request({
@@ -101,18 +114,14 @@ export default {
 			    method: 'POST',
 			}).then(res => {
 				uni.hideLoading();
-				if (res.data.code == 200) {
-				    uni.setStorageSync('token', res.data.data.token);
-				    uni.navigateBack({
-				        delta: 1
-				    });
-				} else {
-				    uni.showToast({
-				        title: '登录失败,当前系统维护中...',
-				        icon: 'none'
-				    });
+				if(res.data.data.isHeadOrNicknameEmpty == 1){
+					that.tapGetUserProfile()
+				}else{
+					uni.setStorageSync('token', res.data.data.token);
+					uni.navigateBack({
+						delta: 1
+					});
 				}
-				
 			});
 		},
 		

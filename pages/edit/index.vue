@@ -194,16 +194,8 @@ export default {
                 },
                 method: 'POST',
             }).then(res => {
-				if (res.data.code == 200) {
-				    that.imageData.cimg = res.data.data.cimg
-				    uni.hideLoading();
-				} else if (res.data.code == -1) {
-				    uni.hideLoading();
-				    uni.showToast({
-				        title: res.data.data,
-				        icon: 'error'
-				    });
-				}
+				that.imageData.cimg = res.data.data.cimg
+				uni.hideLoading();
 			});
         },
 
@@ -221,16 +213,9 @@ export default {
                 },
                 method: 'POST',
             }).then(res => {
-				if (res.data.code == 200) {
-				    that.picUrl = res.data.data.picUrl
-				    that.picId = res.data.data.picId
-				    that.savePicAndImg();
-				} else if (res.data.code == -1) {
-				    uni.showToast({
-				        title: res.data.data,
-				        icon: 'none'
-				    });
-				}
+				that.picUrl = res.data.data.picUrl
+				that.picId = res.data.data.picId
+				that.savePicAndImg();
 			});
         },
 

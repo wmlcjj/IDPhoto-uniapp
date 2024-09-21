@@ -52,10 +52,18 @@ http.interceptors.response.use(async (response) => { /* 请求之后拦截器。
 		url: '/pages/login/index'
 	});
   }
+  if (response.data && response.data.code == -1) { // 抛错,直接展示内容
+	uni.showToast({
+	    title: response.data.data,
+	    icon: 'none'
+	});
+  }
   return response
 }, (response) => { // 请求错误做点什么。可以使用async await 做异步操作
-  console.log(response)
-  return Promise.reject(response)
+  uni.showToast({
+      title: '请求失败，请重新尝试！',
+      icon: 'none'
+  });
 })
 
 export {

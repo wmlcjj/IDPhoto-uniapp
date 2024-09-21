@@ -185,19 +185,7 @@ export default {
                 method: 'POST',
             }).then(res => {
 				uni.hideLoading();
-				if (res.data.code == 200) {
-				    that.goEditPage(res.data.data);
-				} else if (res.data.code == -1) {
-				    console.log(res.data);
-				    uni.showToast({
-				        title: res.data.data,
-				        icon: 'error'
-				    });
-				} else {
-				    uni.navigateTo({
-				        url: '/pages/login/index'
-				    });
-				}
+				that.goEditPage(res.data.data);
 			});
         },
 
