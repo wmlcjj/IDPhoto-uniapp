@@ -6,8 +6,10 @@ import './uni.promisify.adaptor'
 
 import { http } from '@/commom/service.js' // 全局挂载引入，配置相关在该index.js文件里修改
 import apiConfig from '@/commom/apiConfig.js' // 全局挂载引入，配置相关在该index.js文件里修改
+import $util from '@/utils/util.js' // 全局挂载引入，配置相关在该index.js文件里修改
 Vue.prototype.$http = http
 Vue.prototype.$apiConfig = apiConfig
+Vue.prototype.$util = $util
 
 Vue.config.productionTip = false
 App.mpType = 'app'

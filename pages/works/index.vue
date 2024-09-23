@@ -62,7 +62,7 @@ export default {
     },
     methods: {
 		getImagePreviewUrl(id){
-			return this.$apiConfig.baseUrl + "/file/preview?id=" + id + "&token=" + uni.getStorageSync("token")
+			return this.$apiConfig.apiURL + "/file/preview?id=" + id + "&token=" + uni.getStorageSync("token")
 		},
         // 获取数据
         getSizeList() {

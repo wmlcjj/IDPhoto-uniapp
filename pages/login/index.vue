@@ -24,46 +24,103 @@ const app = getApp();
 export default {
     data() {
         return {
+			wechatXcxUrl: 'wechat/xcx/login',
 			userInfo:{
 				headimgurl:'',
 				nickname:'',
 				province:'',
 				city:'',
 				sex:'',
-			}
+			},
+			wechatH5Url: 'wechat/h5/login',
+			scop: 'snsapi_base',
 		};
     },
-    onLoad() {},
+    onLoad(option) {
+		let token = option.token
+		if(option.isExtendNull && option.isExtendNull == 1){
+			this.scop = 'snsapi_userinfo'
+			this.tryLogin()
+		}else if(token){
+			uni.setStorageSync("token", token)
+			let from = option.from ? option.from : '/pages/home/index'
+			uni.redirectTo({
+				url: from
+			});
+		}
+    },
     methods: {
 		tryLogin(){
 			let that = this
 			uni.showLoading({
 			    title: '登录中...'
 			});
+			// #ifdef MP-WEIXIN
 			uni.login({
 				provider: 'weixin',
 				success: loginRes => {
-					that.xcxLogin(loginRes.code)
+					that.loginXcx(loginRes.code)
 				}
 			});
+			// #endif
+			
+			// #ifdef H5
+			if(!this.$util.isWeiXinBrowser()){
+				uni.showToast({
+					title: '请在微信浏览器下打开',
+					icon: 'none'
+				})
+				return
+			}
+			this.loginH5()
+			// #endif
 		},
-		tapGetUserProfile() {
+		// #ifdef H5
+		loginH5(jumpUrl){
+			if(!jumpUrl){
+				jumpUrl = this.$apiConfig.baseWebURL + "/pages/login/index"
+			}
+			if(jumpUrl.indexOf("/pages") === 0){
+				jumpUrl = config.baseWebUrl + jumpUrl
+			}
+			let scop = this.scop ? this.scop : 'snsapi_base'
+			let appId = this.$apiConfig.appId
+			let redirect_uri = this.$apiConfig.apiURL + "/" + this.wechatH5Url + '?appid='+ appId +'&jumpUrl=' + encodeURIComponent(jumpUrl)
+			redirect_uri = encodeURIComponent(redirect_uri)
+			let wxAuthUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='+ appId 
+			+'&redirect_uri='+ redirect_uri 
+			+'&response_type=code&scope='+ scop 
+			+'&state='+ scop 
+			+'#wechat_redirect'
+			window.location.href=wxAuthUrl;
+		},
+		// #endif
+		
+		// #ifdef MP-WEIXIN
+		//授权登陆（小程序）
+		loginXcx(code){
 			let that = this
-			this.$refs["userProfileDialog"].show({
-				desc: "用于显示个人资料",
-				avatarUrl: {
-					requried: true, // 是否必填
-					disable: false, // 是否隐藏
-				}
+			let appId = this.$apiConfig.appId
+			this.userInfo.appId = appId
+			this.userInfo.code = code
+			this.$http.request({
+			    url: this.wechatXcxUrl,
+			    data: this.userInfo,
+			    method: 'POST',
 			}).then(res => {
-				that.userInfo.headimgurl = res.avatarUrl
-				that.userInfo.nickname = res.nickName
-				that.noempower()
-			}, err => {
-				console.log("取消")
+				uni.hideLoading();
+				// if(res.data.data.isExtendNull == 1){
+				// 	that.tapGetUserProfileXcx()
+				// }else{
+					uni.setStorageSync('token', res.data.data.token);
+					uni.navigateBack({
+						delta: 1
+					});
+				// }
 			});
 		},
-        noempower() {
+		//获取用户扩展属性（小程序）
+        getExtendXcx() {
 			let that = this
             uni.showLoading({
                 title: '登录中...'
@@ -78,7 +135,7 @@ export default {
 							that.userInfo.province = res.userInfo.province;
 							that.userInfo.city = res.userInfo.city;
 							that.userInfo.sex = res.userInfo.gender;
-							that.xcxLogin(loginRes.code)
+							that.loginXcx(loginRes.code)
 							uni.setStorageSync('wxuserinfo', res)
 						}
 					});
@@ -103,28 +160,24 @@ export default {
 				}
 			})
         },
-		xcxLogin(code){
+		//弹窗获取用户的头像和昵称（小程序）
+		tapGetUserProfileXcx() {
 			let that = this
-			var appId = uni.getAccountInfoSync().miniProgram.appId
-			this.userInfo.appId = appId
-			this.userInfo.code = code
-			this.$http.request({
-			    url: 'wechat/wxxcx/login',
-			    data: this.userInfo,
-			    method: 'POST',
-			}).then(res => {
-				uni.hideLoading();
-				if(res.data.data.isHeadOrNicknameEmpty == 1){
-					that.tapGetUserProfile()
-				}else{
-					uni.setStorageSync('token', res.data.data.token);
-					uni.navigateBack({
-						delta: 1
-					});
+			this.$refs["userProfileDialog"].show({
+				desc: "用于显示个人资料",
+				avatarUrl: {
+					requried: true, // 是否必填
+					disable: false, // 是否隐藏
 				}
+			}).then(res => {
+				that.userInfo.headimgurl = res.avatarUrl
+				that.userInfo.nickname = res.nickName
+				that.getExtendXcx()
+			}, err => {
+				console.log("取消")
 			});
 		},
-		
+		// #endif
 		
     }
 };

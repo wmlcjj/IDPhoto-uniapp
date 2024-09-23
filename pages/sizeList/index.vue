@@ -94,6 +94,8 @@ export default {
 				        icon: 'none'
 				    });
 				}
+			}).catch(err => {
+				console.log(err);
 			});
         },
 

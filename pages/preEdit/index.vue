@@ -119,12 +119,34 @@ export default {
     methods: {
         // 相册选择
         chooseImage() {
+			let that = this
             if (uni.getStorageSync('token') == '') {
                 uni.navigateTo({
                     url: '/pages/login/index'
                 });
                 return;
             }
+			// #ifdef H5
+			uni.chooseImage({
+				count: 1, // 默认9, 设置图片的选择数量
+				sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+				sourceType: ['album'], // 可以指定来源是相册还是相机，默认二者都有
+				success: (res) => {
+				  // 返回选定照片的本地文件路径列表 tempFilePaths
+				  console.log(res);
+				  let file = res.tempFiles[0]
+				  const fileType = file.name.split('.').pop().toLowerCase();
+				  const fileSizeMB = file.size / 1048576;
+				  that.handleImage(file.path, fileSizeMB, fileType)
+				},
+				fail: (err) => {
+				  // 处理错误情况
+				  console.error(err);
+				}
+			});
+			// #endif
+			
+			// #ifdef MP-WEIXIN
             uni.chooseMedia({
                 count: 1,
                 mediaType: 'image',
@@ -132,34 +154,36 @@ export default {
                 sizeType: 'original',
                 camera: 'back',
                 success: (res) => {
-                    const file = res.tempFiles[0];
-                    const fileType = file.tempFilePath.split('.').pop().toLowerCase();
-                    const fileSizeMB = file.size / 1048576;
-
-                    // 检查文件格式
-                    if (fileType !== 'png' && fileType !== 'jpg' && fileType !== 'jpeg') {
-                        uni.showToast({
-                            title: '不支持该图片格式',
-                            icon: 'none',
-                            duration: 2000
-                        });
-                        return;
-                    }
-
-                    // 检查文件大小
-                    if (fileSizeMB > 15) {
-                        uni.showToast({
-                            title: '图片太大啦，不能超15M哦',
-                            icon: 'none',
-                            duration: 2000
-                        });
-                        return;
-                    }
-                    this.imgUpload(res.tempFiles[0].tempFilePath);
+					const file = res.tempFiles[0];
+					const fileType = res.tempFiles[0].tempFilePath.split('.').pop().toLowerCase();
+					const fileSizeMB = size / 1048576;
+                    that.handleImage(file.tempFilePath, fileSizeMB, fileType)
                 }
             });
+			// #endif
         },
-
+		handleImage(path, fileSizeMB, fileType){
+			// 检查文件格式
+			if (fileType !== 'png' && fileType !== 'jpg' && fileType !== 'jpeg') {
+			    uni.showToast({
+			        title: '不支持该图片格式',
+			        icon: 'none',
+			        duration: 2000
+			    });
+			    return;
+			}
+			
+			// 检查文件大小
+			if (fileSizeMB > 15) {
+			    uni.showToast({
+			        title: '图片太大啦，不能超15M哦',
+			        icon: 'none',
+			        duration: 2000
+			    });
+			    return;
+			}
+			this.imgUpload(path);
+		},
         // 相机拍照
         chooseCamera() {
             if (uni.getStorageSync('token') == '') {
@@ -168,6 +192,22 @@ export default {
                 });
                 return;
             }
+			// #ifdef H5
+			uni.chooseImage({
+				count: 1, // 默认9，设置图片的数量
+				sourceType: ['camera'], // 可选择的源类型，'album'是从相册选图片，'camera'是使用相机拍照
+				success: (res) => {
+				  // 成功选择图片后的回调
+				  console.log(res.tempFilePaths);
+				},
+				fail: (err) => {
+				  // 选择失败的回调
+				  console.error(err);
+				}
+			});
+			// #endif
+			
+			// #ifdef MP-WEIXIN
             const { category, heightMm, heightPx, id, name, widthMm, widthPx } = this.detail;
             //选择相机拍照
             uni.getSetting({
@@ -199,6 +239,7 @@ export default {
                 },
                 fail() {}
             });
+			// #endif
         },
 
         // 开启摄像头
@@ -299,7 +340,7 @@ export default {
 
 /* 轮播图样式 */
 .swiper-component {
-    margin-top: 6vh;
+    /* margin-top: 6vh; */
     width: 100%;
     height: 28%;
 }

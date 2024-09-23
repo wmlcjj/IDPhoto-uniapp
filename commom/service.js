@@ -22,7 +22,7 @@ const getTokenStorage = () => {
 
 const http = new Request()
 http.setConfig((config) => { /* 设置全局配置 */
-  config.baseURL = apiConfig.baseUrl /* 根域名不同 */
+  config.baseURL = apiConfig.apiURL /* 根域名不同 */
   config.header = {
     ...config.header,
   }
@@ -51,12 +51,14 @@ http.interceptors.response.use(async (response) => { /* 请求之后拦截器。
 	uni.navigateTo({
 		url: '/pages/login/index'
 	});
+	return Promise.reject(response.data)
   }
   if (response.data && response.data.code == -1) { // 抛错,直接展示内容
 	uni.showToast({
 	    title: response.data.data,
 	    icon: 'none'
 	});
+	return Promise.reject()(response.data)
   }
   return response
 }, (response) => { // 请求错误做点什么。可以使用async await 做异步操作

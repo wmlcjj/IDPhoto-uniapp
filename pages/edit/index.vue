@@ -29,7 +29,7 @@
 						<view class="icon_select"></view>
 					</view>
 					<!-- 白色背景 -->
-					<view @tap="toggleBg" data-color="#fff" class="color" style="background-color: #fff">
+					<view @tap="toggleBg" data-color="#ffffff" class="color" style="background-color: #ffffff">
 						<view class="icon_select"></view>
 					</view>
 					<!-- 红色背景 -->
@@ -118,7 +118,7 @@ export default {
 
             downloadOne: '',
             downloadTwo: '',
-            current: ''
+            current: 0
         };
     },
     onLoad: function (options) {
@@ -244,6 +244,22 @@ export default {
                 url: this.picUrl,
                 success: function (res) {
                     uni.hideLoading();
+					// #ifdef H5
+					// 预览图片
+					uni.previewImage({
+						urls: res.tempFilePath,
+						longPressActions: {
+							itemList: ['发送给朋友', '保存图片', '收藏'],
+							success: function(data) {
+								console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+							},
+							fail: function(err) {
+								console.log(err.errMsg);
+							}
+						}
+					});
+					// #endif
+					// #ifdef MP-WEIXIN
                     // 下载成功后将图片保存到本地
                     uni.saveImageToPhotosAlbum({
                         filePath: res.tempFilePath,
@@ -258,6 +274,7 @@ export default {
                             that.checkq(); //解决用户拒绝相册
                         }
                     });
+					// #endif
                 },
 
                 fail: function (res) {
@@ -277,6 +294,22 @@ export default {
             this.$http.download('file/download?id=' + this.picId)
 			.then(res => {
 				uni.hideLoading();
+				// #ifdef H5
+				// 预览图片
+				uni.previewImage({
+					urls: [res.tempFilePath],
+					longPressActions: {
+						itemList: ['发送给朋友', '保存图片', '收藏'],
+						success: function(data) {
+							console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+						},
+						fail: function(err) {
+							console.log(err.errMsg);
+						}
+					}
+				});
+				// #endif
+				// #ifdef MP-WEIXIN
 				// 下载成功后将图片保存到本地
 				uni.saveImageToPhotosAlbum({
 				    filePath: res.tempFilePath,
@@ -291,6 +324,7 @@ export default {
 				        that.checkq(); //解决用户拒绝相册
 				    }
 				});
+				// #endif
 			}).catch(err => {
 				console.log(err);
 				uni.showToast({

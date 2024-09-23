@@ -38,6 +38,9 @@
 		}
 	],
 	"globalStyle": {
+		// #ifdef H5
+		"navigationStyle":"custom",
+		// #endif		
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "百宝盒",
 		"navigationBarBackgroundColor": "#F8F8F8",
