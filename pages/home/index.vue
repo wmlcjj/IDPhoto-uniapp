@@ -206,7 +206,7 @@ export default {
     margin: 0 auto;
     border-radius: 30rpx;
     position: relative;
-    top: -100rpx;
+    top: -120rpx;
     box-shadow: 0px 5px 8px #ccc;
 }
 

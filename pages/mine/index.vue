@@ -17,7 +17,7 @@
             <view class="user-name" style="width: 6em" v-if="authorized" @tap="openEditProfileModal">
                 <view class="nickname">
                     Hi，{{ nickname }}
-					<uni-icons type="eye" size="16" @tap.native="openEditProfileModal" ></uni-icons>
+					<uni-icons type="eye" size="16" style="height: 16px;" @tap.native="openEditProfileModal" ></uni-icons>
                 </view>
                 <view class="user-days" @tap="openEditProfileModal">证件照伴侣已经陪伴你走过 {{ days }} 天</view>
             </view>
@@ -27,43 +27,45 @@
             <view class="button-container">
                 <button class="button-item" @tap="mywork">
                     <view class="icon-text">
-                        <uni-icons type="images" size="40" ></uni-icons>
+                        <uni-icons type="images" size="35"></uni-icons>
                         <text>我的作品</text>
                     </view>
                 </button>
                 <button class="button-item" @tap="navigateToEdit">
                     <view class="icon-text">
-                        <uni-icons type="gift" size="40" ></uni-icons>
+                        <uni-icons type="gift" size="35"></uni-icons>
                         <text>我的权益</text>
                     </view>
                 </button>
                 <button class="button-item" @tap="navigateToFree">
                     <view class="icon-text">
-                        <uni-icons type="help" size="40" ></uni-icons>
+                        <uni-icons type="help" size="35"></uni-icons>
                         <text>常见问题</text>
                     </view>
                 </button>
-                <button class="button-item" open-type="contact">
-                    <view class="icon-text">
-                        <uni-icons type="headphones" size="40" ></uni-icons>
-                        <text>客服中心</text>
-                    </view>
-                </button>
-<!--                <button class="button-item" @tap="evaluate">
-                    <view class="icon-text">
-                        <uni-icons type="hand-up" size="40" ></uni-icons>
-                        <text>赏好评</text>
-                    </view>
-                </button> -->
-                <button class="button-item" open-type="share">
-                    <view class="icon-text">
-                        <uni-icons type="redo" size="40" ></uni-icons>
-                        <text>分享</text>
-                    </view>
-                </button>
+				 <!-- #ifdef MP-WEIXIN -->
+				 <button class="button-item" open-type="contact">
+				      <view class="icon-text">
+				          <uni-icons type="headphones" size="35"></uni-icons>
+				          <text>客服中心</text>
+				      </view>
+				  </button>
+				 <button class="button-item" @tap="evaluate">
+				      <view class="icon-text">
+				          <uni-icons type="hand-up" size="35"></uni-icons>
+				          <text>赏好评</text>
+				      </view>
+				  </button>
+				  <button class="button-item" open-type="share">
+				      <view class="icon-text">
+				          <uni-icons type="redo" size="35"></uni-icons>
+				          <text>分享</text>
+				      </view>
+				  </button>
+				 <!-- #endif -->
                 <button class="button-item">
                     <view class="icon-text">
-                        <uni-icons type="more" size="40" ></uni-icons>
+                        <uni-icons type="more" size="35"></uni-icons>
                         <text>待开发</text>
                     </view>
                 </button>
@@ -111,7 +113,7 @@
                         <button class="avatar-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
                             <image class="avatar" :src="avatarFile" mode="aspectFill"></image>
                             <view class="overlay">
-								<uni-icons type="camera"></uni-icons>
+								<uni-icons type="camera" size="24" style="height: 24px;" ></uni-icons>
                                 <text class="overlay-text">更换头像</text>
                             </view>
                         </button>
@@ -363,7 +365,7 @@ export default {
     background-color: #fff;
     margin: 0 20px;
     position: relative;
-    top: -60px;
+    top: -50px;
     border-radius: 15px;
     padding: 20px 10px;
 }
