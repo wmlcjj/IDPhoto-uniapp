@@ -1,15 +1,14 @@
 {
-    "id": "cui-userprofiledialog",
-    "name": "获取昵称、头像的弹窗，适用最新微信小程序",
-    "displayName": "获取昵称、头像的弹窗，适用最新微信小程序",
-    "version": "v1.2.4",
-    "description": "获取昵称、头像弹窗，适用最新微信小程序，官方回收getUserProfile接口后，使用button的开放能力chooseAvatar替换获取头像和昵称。自带图片裁剪功能 ",
+    "id": "notesbook-color-board",
+    "name": "color-board",
+    "displayName": "color-board",
+    "version": "1.0.1",
+    "description": "取色器，色盘，调色板，渐变色",
     "keywords": [
-        "头像",
-        "昵称",
-        "弹窗",
-        "小程序",
-        "授权"
+        "取色器",
+        "色盘",
+        "调色板",
+        "渐变色"
     ],
     "dcloudext": {
         "category": [

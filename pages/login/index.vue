@@ -15,7 +15,6 @@
 					<button @tap="tryLogin" class="button">快捷登录</button>
 				</view>
 			</view>
-			<cui-userprofiledialog ref="userProfileDialog" paddingBottom="92rpx"></cui-userprofiledialog>
 		</view>
 </template>
 
@@ -44,7 +43,7 @@ export default {
 		}else if(token){
 			uni.setStorageSync("token", token)
 			let from = option.from ? option.from : '/pages/home/index'
-			uni.redirectTo({
+			uni.switchTab({
 				url: from
 			});
 		}
@@ -109,14 +108,10 @@ export default {
 			    method: 'POST',
 			}).then(res => {
 				uni.hideLoading();
-				// if(res.data.data.isExtendNull == 1){
-				// 	that.tapGetUserProfileXcx()
-				// }else{
 					uni.setStorageSync('token', res.data.data.token);
 					uni.navigateBack({
 						delta: 1
 					});
-				// }
 			});
 		},
 		//获取用户扩展属性（小程序）
@@ -160,23 +155,6 @@ export default {
 				}
 			})
         },
-		//弹窗获取用户的头像和昵称（小程序）
-		tapGetUserProfileXcx() {
-			let that = this
-			this.$refs["userProfileDialog"].show({
-				desc: "用于显示个人资料",
-				avatarUrl: {
-					requried: true, // 是否必填
-					disable: false, // 是否隐藏
-				}
-			}).then(res => {
-				that.userInfo.headimgurl = res.avatarUrl
-				that.userInfo.nickname = res.nickName
-				that.getExtendXcx()
-			}, err => {
-				console.log("取消")
-			});
-		},
 		// #endif
 		
     }

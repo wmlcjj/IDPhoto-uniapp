@@ -63,15 +63,14 @@
                 <button @tap="saveNormalPhoto" type="default" class="save-btn">保存预览照</button>
                 <button @tap="saveHDPhoto" type="default" class="save-btn">保存AI高清照</button>
             </view>
-
-            <color-picker @changeColor="pickColor" initColor="rgb(7,193,96)" :show="pick" />
+			<t-color-picker ref="colorPicker" :color="{r: 255,g: 0,b: 0,a: 0.6}" @confirm="pickColor"></t-color-picker>
         </view>
     </view>
 </template>
 
 <script>
 	
-import colorPicker from '../../components/color-picker/color-picker';
+import tColorPicker from '../../components/t-color-picker/t-color-picker';
 const app = getApp();
 let canOnePointMove = false;
 let onePoint = {
@@ -86,7 +85,7 @@ let twoPoint = {
 };
 export default {
     components: {
-        colorPicker
+        tColorPicker
     },
     data() {
         return {
@@ -170,7 +169,12 @@ export default {
         },
 
         toPick: function () {
-            this.pick = true
+			this.pick = !this.pick
+			if(this.pick){
+				this.$refs.colorPicker.open()
+			}else{
+				this.$refs.colorPicker.close()
+			}
         },
 
         //自定义换背景
@@ -178,7 +182,7 @@ export default {
             uni.showLoading({
                 title: '制作中...'
             });
-            let color = this.rgbStringToHex(e.detail.color);
+            let color = e.hex.toUpperCase();
             this.color = color
             this.updateColor(color, this.imageData.kimg);
         },
@@ -415,8 +419,7 @@ export default {
         },
 
         touchmove: function (e) {
-            const { data } = this;
-            const thatData = data;
+            let thatData = this;
             if (e.touches.length < 2 && canOnePointMove) {
                 // 单指移动
                 const onePointDiffX = e.touches[0].pageX * 2 - onePoint.x;

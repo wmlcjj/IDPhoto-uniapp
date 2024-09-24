@@ -42,8 +42,10 @@ export default {
         };
     },
     onLoad: function () {
-        this.getSizeList();
     },
+	onShow: function () {
+		this.getSizeList();
+	},
     onPullDownRefresh: function () {
         this.photoSizeList=[]
         this.pageNum=1

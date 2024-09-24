@@ -40,6 +40,8 @@ export default {
         };
     }, // 页面加载时请求第一页数据
     onLoad() {
+    },
+	onShow() {
         if (!uni.getStorageSync("token")) {
             uni.navigateTo({
                 url: '/pages/login/index'
