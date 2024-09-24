@@ -147,7 +147,9 @@ export default {
     onLoad: function () {},
     // 获取用户信息，同时解决跳转登录后页面还是旧数据问题
     onShow: function () {
-        this.getUserInfo()
+		if(!this.authorized){
+			this.getUserInfo()
+		}
     },
     // 分享设置
     onShareAppMessage() {
