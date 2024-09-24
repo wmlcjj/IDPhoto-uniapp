@@ -129,7 +129,7 @@ export default {
 			// #ifdef H5
 			uni.chooseImage({
 				count: 1, // 默认9, 设置图片的选择数量
-				sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+				sizeType: 'original', // 可以指定是原图还是压缩图，默认二者都有
 				sourceType: ['album'], // 可以指定来源是相册还是相机，默认二者都有
 				success: (res) => {
 				  // 返回选定照片的本地文件路径列表 tempFilePaths
@@ -156,7 +156,7 @@ export default {
                 success: (res) => {
 					const file = res.tempFiles[0];
 					const fileType = res.tempFiles[0].tempFilePath.split('.').pop().toLowerCase();
-					const fileSizeMB = size / 1048576;
+					const fileSizeMB = res.tempFiles[0].size / 1048576;
                     that.handleImage(file.tempFilePath, fileSizeMB, fileType)
                 }
             });
@@ -186,6 +186,7 @@ export default {
 		},
         // 相机拍照
         chooseCamera() {
+			let that = this
             if (uni.getStorageSync('token') == '') {
                 uni.navigateTo({
                     url: '/pages/login/index'
@@ -194,14 +195,19 @@ export default {
             }
 			// #ifdef H5
 			uni.chooseImage({
-				count: 1, // 默认9，设置图片的数量
-				sourceType: ['camera'], // 可选择的源类型，'album'是从相册选图片，'camera'是使用相机拍照
+				count: 1, // 默认9, 设置图片的选择数量
+				sizeType: 'original', // 可以指定是原图还是压缩图，默认二者都有
+				sourceType: ['camera'], // 可以指定来源是相册还是相机，默认二者都有
 				success: (res) => {
-				  // 成功选择图片后的回调
-				  console.log(res.tempFilePaths);
+				  // 返回选定照片的本地文件路径列表 tempFilePaths
+				  console.log(res);
+				  let file = res.tempFiles[0]
+				  const fileType = file.name.split('.').pop().toLowerCase();
+				  const fileSizeMB = file.size / 1048576;
+				  that.handleImage(file.path, fileSizeMB, fileType)
 				},
 				fail: (err) => {
-				  // 选择失败的回调
+				  // 处理错误情况
 				  console.error(err);
 				}
 			});

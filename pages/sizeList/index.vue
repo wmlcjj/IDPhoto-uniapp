@@ -6,7 +6,7 @@
 					active-color="#2c2c2c" @clickItem="clickTab" />
 			</view>
 			<view class="content">
-				<scroll-view class="container" scroll-y @scrolltolower="moredata" :scroll-top="scrollTop">
+				<scroll-view class="container" scroll-y="true" @scroll="scroll" @scrolltolower="moredata" :scroll-top="scrollTop">
 				    <view :data-index="index" @tap="goNextPage" v-for="(item, index) in photoSizeList" :key="index">
 				        <view class="list">
 				            <view>
@@ -35,7 +35,10 @@ export default {
             pageNum: 1,
             pageSize: 10,
             hasMoreData: true,
-            scrollTop: 0
+            scrollTop: 0,
+			old: {
+				scrollTop: 0
+			}
         };
     },
     onLoad: function () {
@@ -108,9 +111,15 @@ export default {
                 url: '/pages/preEdit/index?index=' + e.currentTarget.dataset.index + '&data=' + JSON.stringify(this.photoSizeList[e.currentTarget.dataset.index])
             });
         },
-
+		scroll: function(e) {
+			this.old.scrollTop = e.detail.scrollTop
+		},
         scrollToTop: function () {
-            this.scrollTop=0
+            // 解决view层不同步的问题
+			this.scrollTop = this.old.scrollTop
+			this.$nextTick(function() {
+				this.scrollTop = 0
+			});
         }
     }
 };

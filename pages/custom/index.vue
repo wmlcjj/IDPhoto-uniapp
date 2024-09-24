@@ -30,8 +30,8 @@ const app = getApp();
 export default {
     data() {
         return {
-            width: undefined,
-            height: undefined,
+            width: 0,
+            height: 0,
             name: '',
             px: '295*413 px',
             size: '25*35'
