@@ -14,7 +14,7 @@
 
 - 小程序后端请前往：
 - gitee: https://gitee.com/wmlcjj/ai-idphoto
-- github: https://github.com/903249871/ai-idphoto
+- github: https://github.com/wmlcjj/ai-idphoto
 
 ------
 
