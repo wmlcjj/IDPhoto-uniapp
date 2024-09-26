@@ -1,8 +1,8 @@
-let DOMAIN = 'https://h5.junjia-teach.com/idPhoto-server'
+let DOMAIN = '接口地址'
 let API_URL = ''
-let BASE_WEB_URL = 'https://h5.junjia-teach.com'
+let BASE_WEB_URL = '页面地址'
 // #ifdef H5
-let appId = 'wxabd37d337b0800bc'
+let appId = '微信公众号appId'
 // #endif
 // #ifdef MP-WEIXIN
 let appId = uni.getAccountInfoSync().miniProgram.appId
